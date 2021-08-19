@@ -86,7 +86,17 @@ module.exports = (db) => {
   });
 
   app.get('/rides', (req, res) => {
-    db.all('SELECT * FROM Rides', (err, rows) => {
+    const page = parseInt(req.query.page, 10) || 1;
+    const pageSize = parseInt(req.query.pageSize, 10) || 10;
+
+    if (page < 1 || pageSize < 1) {
+      return res.send({
+        error_code: 'QUERY_VALIDATION_ERROR',
+        message: 'Either "page" or "pageSize" parameter is invalid',
+      });
+    }
+
+    db.all('SELECT COUNT(*) as rowsTotal FROM Rides', (err, [{ rowsTotal }]) => {
       if (err) {
         return res.send({
           error_code: 'SERVER_ERROR',
@@ -94,14 +104,24 @@ module.exports = (db) => {
         });
       }
 
-      if (rows.length === 0) {
-        return res.send({
-          error_code: 'RIDES_NOT_FOUND_ERROR',
-          message: 'Could not find any rides',
-        });
-      }
+      db.all('SELECT * FROM Rides LIMIT ? OFFSET ?', [pageSize, (page - 1) * pageSize], (error, pageRows) => {
+        if (error) {
+          return res.send({
+            error_code: 'SERVER_ERROR',
+            message: 'Unknown error',
+          });
+        }
 
-      res.send(rows);
+        res.send({
+          data: pageRows,
+          meta: {
+            total: rowsTotal,
+            currentPage: page,
+            pageSize,
+            pagesTotal: Math.ceil(rowsTotal / pageSize),
+          },
+        });
+      });
     });
   });
 

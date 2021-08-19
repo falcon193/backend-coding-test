@@ -141,7 +141,7 @@ describe('API tests', () => {
     });
 
     describe('GET /rides', () => {
-      it('should return list of rides', (done) => {
+      it('should return first page of rides if no pagination params are passed', (done) => {
         request(app)
           .get('/rides')
           .expect('Content-Type', /json/)
@@ -149,17 +149,68 @@ describe('API tests', () => {
           .then((res) => {
             const { body } = res;
 
-            expect(Array.isArray(body)).equal(true);
-            expect(body.length).greaterThanOrEqual(1);
-            expect(body[0]).to.have.property('rideID').that.is.a('number');
-            expect(body[0]).to.have.property('startLat').that.is.a('number');
-            expect(body[0]).to.have.property('startLong').that.is.a('number');
-            expect(body[0]).to.have.property('endLat').that.is.a('number');
-            expect(body[0]).to.have.property('endLong').that.is.a('number');
-            expect(body[0]).to.have.property('riderName').that.is.a('string').with.length.greaterThanOrEqual(1);
-            expect(body[0]).to.have.property('driverName').that.is.a('string').with.length.greaterThanOrEqual(1);
-            expect(body[0]).to.have.property('driverVehicle').that.is.a('string').with.length.greaterThanOrEqual(1);
-            expect(body[0]).to.have.property('created').that.is.a('string');
+            expect(Array.isArray(body.data)).equal(true);
+            expect(body.data.length).greaterThanOrEqual(1);
+            expect(body.data[0]).to.have.property('rideID').that.is.a('number');
+            expect(body.data[0]).to.have.property('startLat').that.is.a('number');
+            expect(body.data[0]).to.have.property('startLong').that.is.a('number');
+            expect(body.data[0]).to.have.property('endLat').that.is.a('number');
+            expect(body.data[0]).to.have.property('endLong').that.is.a('number');
+            expect(body.data[0]).to.have.property('riderName').that.is.a('string').with.length.greaterThanOrEqual(1);
+            expect(body.data[0]).to.have.property('driverName').that.is.a('string').with.length.greaterThanOrEqual(1);
+            expect(body.data[0]).to.have.property('driverVehicle').that.is.a('string').with.length.greaterThanOrEqual(1);
+            expect(body.data[0]).to.have.property('created').that.is.a('string');
+
+            expect(body.meta).to.have.property('total').that.is.a('number').greaterThanOrEqual(1);
+            expect(body.meta).to.have.property('currentPage').that.is.a('number').equal(1);
+            expect(body.meta).to.have.property('pageSize').that.is.a('number').equal(10);
+            expect(body.meta).to.have.property('pagesTotal').that.is.a('number').greaterThanOrEqual(1);
+
+            return done();
+          })
+          .catch((error) => done(error));
+      });
+
+      it('should return certain page of rides if pagination params are passed', (done) => {
+        request(app)
+          .get('/rides?page=2&pageSize=1')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .then((res) => {
+            const { body } = res;
+
+            expect(Array.isArray(body.data)).equal(true);
+            if (body.data[0]) {
+              expect(body.data[0]).to.have.property('rideID').that.is.a('number');
+              expect(body.data[0]).to.have.property('startLat').that.is.a('number');
+              expect(body.data[0]).to.have.property('startLong').that.is.a('number');
+              expect(body.data[0]).to.have.property('endLat').that.is.a('number');
+              expect(body.data[0]).to.have.property('endLong').that.is.a('number');
+              expect(body.data[0]).to.have.property('riderName').that.is.a('string').with.length.greaterThanOrEqual(1);
+              expect(body.data[0]).to.have.property('driverName').that.is.a('string').with.length.greaterThanOrEqual(1);
+              expect(body.data[0]).to.have.property('driverVehicle').that.is.a('string').with.length.greaterThanOrEqual(1);
+              expect(body.data[0]).to.have.property('created').that.is.a('string');
+            }
+
+            expect(body.meta).to.have.property('total').that.is.a('number').greaterThanOrEqual(1);
+            expect(body.meta).to.have.property('currentPage').that.is.a('number').equal(2);
+            expect(body.meta).to.have.property('pageSize').that.is.a('number').equal(1);
+            expect(body.meta).to.have.property('pagesTotal').that.is.a('number').greaterThanOrEqual(1);
+
+            return done();
+          })
+          .catch((error) => done(error));
+      });
+
+      it('should throw query validation error if invalid pagination params are passed', (done) => {
+        request(app)
+          .get('/rides?page=-2&pageSize=-10')
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .then((res) => {
+            const { body } = res;
+
+            expect(body.error_code).equal('QUERY_VALIDATION_ERROR');
 
             return done();
           })
