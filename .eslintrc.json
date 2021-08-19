@@ -13,6 +13,7 @@
     },
     "rules": {
         "consistent-return": "off",
-        "func-names": "off"
+        "func-names": "off",
+        "arrow-body-style": "off"
     }
 }
