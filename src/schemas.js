@@ -1,20 +1,13 @@
 module.exports = (db) => {
-  const createRideTableSchema = `
-        CREATE TABLE Rides
-        (
-        rideID INTEGER PRIMARY KEY AUTOINCREMENT,
-        startLat DECIMAL NOT NULL,
-        startLong DECIMAL NOT NULL,
-        endLat DECIMAL NOT NULL,
-        endLong DECIMAL NOT NULL,
-        riderName TEXT NOT NULL,
-        driverName TEXT NOT NULL,
-        driverVehicle TEXT NOT NULL,
-        created DATETIME default CURRENT_TIMESTAMP
-        )
-    `;
-
-  db.run(createRideTableSchema);
-
-  return db;
+  return db.schema.createTable('Rides', (table) => {
+    table.increments('rideID');
+    table.decimal('startLat');
+    table.decimal('startLong');
+    table.decimal('endLat');
+    table.decimal('endLong');
+    table.string('riderName');
+    table.string('driverName');
+    table.string('driverVehicle');
+    table.dateTime('created').defaultTo(db.fn.now());
+  });
 };
