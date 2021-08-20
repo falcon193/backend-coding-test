@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint --fix src/ tests/",
     "test": "nyc mocha tests",
-    "start": "node index.js"
+    "start": "node src/app.js"
   },
   "keywords": [
     "Xendit"
