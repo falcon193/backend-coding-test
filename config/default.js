@@ -1,4 +1,8 @@
 module.exports = {
+  app: {
+    port: 8010,
+  },
+
   db: {
     client: 'sqlite3',
     connection: ':memory:',
