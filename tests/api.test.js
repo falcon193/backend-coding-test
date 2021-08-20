@@ -44,7 +44,7 @@ describe('API tests', () => {
           .post('/rides')
           .send(ride)
           .expect('Content-Type', /json/)
-          .expect(200)
+          .expect(responseStatus)
           .then((res) => {
             const { body } = res;
             responseChecker(body);
