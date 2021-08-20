@@ -1,8 +1,8 @@
 const { expect } = require('chai');
 const request = require('supertest');
-const db = require('../src/utils/db');
-const { configureServer } = require('../src/api');
-const { buildSchemas } = require('../src/schemas');
+const db = require('../../src/utils/db');
+const { configureServer } = require('../../src/api');
+const { buildSchemas } = require('../../src/schemas');
 
 describe('API tests', () => {
   const app = configureServer();
