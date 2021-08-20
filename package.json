@@ -8,7 +8,8 @@
   },
   "scripts": {
     "lint": "eslint --fix src/ tests/",
-    "test": "nyc mocha tests",
+    "test": "nyc mocha tests/api",
+    "test:load": "artillery run",
     "start": "node src/app.js"
   },
   "keywords": [
@@ -24,6 +25,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "artillery": "^1.7.7",
     "chai": "^4.3.4",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",

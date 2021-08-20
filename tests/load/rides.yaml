@@ -1,0 +1,57 @@
+config:
+  target: "http://localhost:8010"
+  phases:
+    - duration: 30
+      arrivalRate: 100
+  ensure:
+    p99: 50
+  variables:
+    start_lat:
+      - 13
+      - 87
+      - -17
+    start_long:
+      - 167
+      - 18
+      - -97
+    end_lat:
+      - -87
+      - 9
+      - 76
+    end_long:
+      - -118
+      - 93
+      - 179
+    rider_name:
+      - rider1
+      - rider2
+      - rider3
+    driver_name:
+      - driver1
+      - driver2
+      - driver3
+    driver_vehicle:
+      - vehicle1
+      - vehicle2
+      - vehicle3
+
+scenarios:
+  - name: 'Rides API'
+    flow:
+      - post:
+          url: "/rides"
+          json:
+            start_lat: "{{ start_lat }}"
+            start_long: "{{ start_long }}"
+            end_lat: "{{ end_lat }}"
+            end_long: "{{ end_long }}"
+            rider_name: "{{ rider_name }}"
+            driver_name: "{{ driver_name }}"
+            driver_vehicle: "{{ driver_vehicle }}"
+          capture:
+            json: "$[0].rideID"
+            as: "id"
+      - get:
+          url: "/rides"
+      - get:
+          url: "/rides/{{ id }}"
