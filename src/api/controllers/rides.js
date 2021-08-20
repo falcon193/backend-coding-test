@@ -1,7 +1,8 @@
 const db = require('../../utils/db');
+const ApiError = require('../errors/ApiError');
 
 module.exports = {
-  create: async (req, res) => {
+  create: async (req, res, next) => {
     try {
       const startLatitude = Number(req.body.start_lat);
       const startLongitude = Number(req.body.start_long);
@@ -13,39 +14,19 @@ module.exports = {
 
       if (startLatitude < -90 || startLatitude > 90
         || startLongitude < -180 || startLongitude > 180) {
-        // @TODO Create a unified error handler, set response status to the corresponding (400)
-        return res.send({
-          error_code: 'VALIDATION_ERROR',
-          message: 'Start latitude and longitude must be between -90 - 90 and -180 to 180 degrees respectively',
-        });
+        throw new ApiError('START_LAT_OR_LONG_INVALID');
       }
       if (endLatitude < -90 || endLatitude > 90 || endLongitude < -180 || endLongitude > 180) {
-        // @TODO Create a unified error handler, set response status to the corresponding (400)
-        return res.send({
-          error_code: 'VALIDATION_ERROR',
-          message: 'End latitude and longitude must be between -90 - 90 and -180 to 180 degrees respectively',
-        });
+        throw new ApiError('END_LAT_OR_LONG_INVALID');
       }
       if (typeof riderName !== 'string' || riderName.length < 1) {
-        // @TODO Create a unified error handler, set response status to the corresponding (400)
-        return res.send({
-          error_code: 'VALIDATION_ERROR',
-          message: 'Rider name must be a non empty string',
-        });
+        throw new ApiError('RIDER_NAME_INVALID');
       }
       if (typeof driverName !== 'string' || driverName.length < 1) {
-        // @TODO Create a unified error handler, set response status to the corresponding (400)
-        return res.send({
-          error_code: 'VALIDATION_ERROR',
-          message: 'Rider name must be a non empty string',
-        });
+        throw new ApiError('DRIVER_NAME_INVALID');
       }
       if (typeof driverVehicle !== 'string' || driverVehicle.length < 1) {
-        // @TODO Create a unified error handler, set response status to the corresponding (400)
-        return res.send({
-          error_code: 'VALIDATION_ERROR',
-          message: 'Rider name must be a non empty string',
-        });
+        throw new ApiError('DRIVER_VEHICLE_INVALID');
       }
 
       const [rideId] = await db.table('Rides').insert({
@@ -61,24 +42,16 @@ module.exports = {
 
       res.json([ride]); // We have to return array of one element for now to be backward compatible
     } catch (error) {
-      // @TODO Create a unified error handler, change response status to the corresponding (500)
-      res.send({
-        error_code: 'SERVER_ERROR',
-        message: 'Unknown error',
-      });
+      return next(error);
     }
   },
-  list: async (req, res) => {
+  list: async (req, res, next) => {
     try {
       const page = parseInt(req.query.page, 10) || 1;
       const pageSize = parseInt(req.query.pageSize, 10) || 10;
 
       if (page < 1 || pageSize < 1) {
-        // @TODO Create a unified error handler, change response status to the corresponding (400)
-        return res.send({
-          error_code: 'QUERY_VALIDATION_ERROR',
-          message: 'Either "page" or "pageSize" parameter is invalid',
-        });
+        throw new ApiError('PAGINATION_PARAMETERS_INVALID');
       }
 
       const [
@@ -99,32 +72,20 @@ module.exports = {
         },
       });
     } catch (error) {
-      // @TODO Create a unified error handler, change response status to the corresponding (500)
-      res.send({
-        error_code: 'SERVER_ERROR',
-        message: 'Unknown error',
-      });
+      return next(error);
     }
   },
-  get: async (req, res) => {
+  get: async (req, res, next) => {
     try {
       const ride = await db.table('Rides').first().where({ rideID: req.params.id });
 
       if (!ride) {
-        // @TODO Create a unified error handler, change response status to the corresponding (404)
-        return res.send({
-          error_code: 'RIDES_NOT_FOUND_ERROR',
-          message: 'Could not find any rides',
-        });
+        throw new ApiError('RIDES_NOT_FOUND');
       }
 
       res.json([ride]); // We have to return array of one element for now to be backward compatible
     } catch (error) {
-      // @TODO Create a unified error handler, change response status to the corresponding (500)
-      res.send({
-        error_code: 'SERVER_ERROR',
-        message: 'Unknown error',
-      });
+      return next(error);
     }
   },
 };
