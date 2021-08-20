@@ -1,11 +1,12 @@
 const { expect } = require('chai');
 const request = require('supertest');
 const db = require('../src/utils/db');
-
-const app = require('../src/app')(db);
-const buildSchemas = require('../src/schemas');
+const { configureServer } = require('../src/api');
+const { buildSchemas } = require('../src/schemas');
 
 describe('API tests', () => {
+  const app = configureServer();
+
   before(() => buildSchemas(db));
   after(() => db.destroy());
 
