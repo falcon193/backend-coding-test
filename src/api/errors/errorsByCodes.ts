@@ -1,4 +1,9 @@
-module.exports = Object.freeze({
+type ErrorDefinition = {
+  statusCode: number;
+  data: Record<string, any>;
+};
+
+const errorDefinitions: Readonly<{ [key: string]: ErrorDefinition }> = Object.freeze({
   START_LAT_OR_LONG_INVALID: {
     statusCode: 200, // We have to keep it 200 for backward compatibility, @TODO change to 400
     data: {
@@ -56,3 +61,5 @@ module.exports = Object.freeze({
     },
   },
 });
+
+export default errorDefinitions;

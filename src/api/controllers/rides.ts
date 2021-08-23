@@ -1,8 +1,14 @@
-const db = require('../../utils/db');
-const ApiError = require('../errors/ApiError');
+import express from 'express';
 
-module.exports = {
-  create: async (req, res, next) => {
+import db from '../../utils/db';
+import ApiError from '../errors/ApiError';
+
+export default {
+  create: async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ): Promise<void> => {
     try {
       const startLatitude = Number(req.body.start_lat);
       const startLongitude = Number(req.body.start_long);
@@ -29,7 +35,7 @@ module.exports = {
         throw new ApiError('DRIVER_VEHICLE_INVALID');
       }
 
-      const [rideId] = await db.table('Rides').insert({
+      const [rideId]: string[] = await db.table('Rides').insert({
         startLat: startLatitude,
         startLong: startLongitude,
         endLat: endLatitude,
@@ -42,13 +48,29 @@ module.exports = {
 
       res.json([ride]); // We have to return array of one element for now to be backward compatible
     } catch (error) {
-      return next(error);
+      next(error);
     }
   },
-  list: async (req, res, next) => {
+  list: async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ): Promise<void> => {
     try {
-      const page = parseInt(req.query.page, 10) || 1;
-      const pageSize = parseInt(req.query.pageSize, 10) || 10;
+      let page = 1;
+      let pageSize = 10;
+      if (typeof req.query.page === 'string') {
+        const parsedInteger = parseInt(req.query.page, 10);
+        if (parsedInteger) {
+          page = parsedInteger;
+        }
+      }
+      if (typeof req.query.pageSize === 'string') {
+        const parsedInteger = parseInt(req.query.pageSize, 10);
+        if (parsedInteger) {
+          pageSize = parsedInteger;
+        }
+      }
 
       if (page < 1 || pageSize < 1) {
         throw new ApiError('PAGINATION_PARAMETERS_INVALID');
@@ -72,10 +94,14 @@ module.exports = {
         },
       });
     } catch (error) {
-      return next(error);
+      next(error);
     }
   },
-  get: async (req, res, next) => {
+  get: async (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ): Promise<void> => {
     try {
       const ride = await db.table('Rides').first().where({ rideID: req.params.id });
 
@@ -85,7 +111,7 @@ module.exports = {
 
       res.json([ride]); // We have to return array of one element for now to be backward compatible
     } catch (error) {
-      return next(error);
+      next(error);
     }
   },
 };

@@ -4,5 +4,5 @@
     "lines": 80,
     "branches": 80,
     "statements": 80,
-    "exclude": ["src/app.js", "tests"]
+    "exclude": ["src/app.ts", "build", "tests"]
 }
