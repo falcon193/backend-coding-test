@@ -1,7 +1,11 @@
-const errorsByCodes = require('./errorsByCodes');
+import errorsByCodes from './errorsByCodes';
 
 class ApiError {
-  constructor(errorCode, additionalData) {
+  statusCode = 500;
+
+  data: Record<string, any> = {};
+
+  constructor(errorCode: string, additionalData: Record<string, any> = {}) {
     Error.call(this);
     Error.captureStackTrace(this);
 
@@ -18,4 +22,4 @@ class ApiError {
   }
 }
 
-module.exports = ApiError;
+export default ApiError;

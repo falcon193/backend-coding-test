@@ -1,16 +1,18 @@
 /* eslint-disable global-require */
-const express = require('express');
+import express from 'express';
+
+import ridesController from '../controllers/rides';
 
 const controllers = {
-  rides: require('../controllers/rides'),
+  rides: ridesController,
 };
 
 const router = express.Router();
 
-router.get('/health', (req, res) => res.send('Healthy'));
+router.get('/health', (req: express.Request, res: express.Response) => res.send('Healthy'));
 
 router.post('/rides', controllers.rides.create);
 router.get('/rides', controllers.rides.list);
 router.get('/rides/:id', controllers.rides.get);
 
-module.exports = router;
+export default router;

@@ -2,3 +2,4 @@
 node_modules
 logs/
 .nyc_output/
+build/
