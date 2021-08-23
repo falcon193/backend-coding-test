@@ -50,7 +50,7 @@ Please implement the following tooling:
 2. (✅ DONE ✅) Ensure that tooling is connected to `npm test`
 3. (✅ DONE ✅) Create a separate pull request against `master` of your fork with the linter fixes and merge it
 4. (✅ DONE ✅) Create a separate pull request against `master` of your fork to increase code coverage to acceptable thresholds and merge it
-5. **[BONUS]** Add integration to CI such as Travis or Circle
+5. (✅ DONE ✅) **[BONUS]** Add integration to CI such as Travis or Circle
 6. **[BONUS]** Add Typescript support
 
 ### Implement Pagination
