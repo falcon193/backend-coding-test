@@ -9,8 +9,10 @@
   "scripts": {
     "lint": "eslint --fix src/ tests/",
     "test": "nyc mocha tests/api",
-    "test:load": "artillery run",
-    "start": "node src/app.js"
+    "test:load": "npm run start:background && artillery run tests/load/rides.yaml && npm run stop:background",
+    "start": "node src/app.js",
+    "start:background": "forever start src/app.js",
+    "stop:background": "forever stop src/app.js"
   },
   "keywords": [
     "Xendit"
@@ -30,6 +32,7 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.0",
+    "forever": "^4.0.1",
     "mocha": "^6.1.4",
     "nyc": "^15.1.0",
     "pre-push": "^0.1.1",
