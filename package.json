@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint --fix src/ tests/",
     "test": "nyc mocha tests/api",
-    "test:load": "npm run start:background && artillery run tests/load/rides.yaml && npm run stop:background",
+    "test:load": "npm run start:background && artillery run tests/load/rides.yaml ; npm run stop:background",
     "start": "node src/app.js",
     "start:background": "forever start src/app.js",
     "stop:background": "forever stop src/app.js"
