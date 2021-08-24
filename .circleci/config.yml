@@ -21,7 +21,9 @@ jobs:
     steps:
       - checkout
       - run: npm install
-      - run: npm run test:load
+      - run: npm run start:background
+      - run: npm run test:load tests/load/rides.yaml
+      - run: npm run stop:background
 
 workflows:
   lint_and_test:
