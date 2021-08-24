@@ -1,8 +1,8 @@
-const { expect } = require('chai');
-const request = require('supertest');
-const db = require('../../src/utils/db');
-const { configureServer } = require('../../src/api');
-const { buildSchemas } = require('../../src/schemas');
+import { expect } from 'chai';
+import request from 'supertest';
+import db from '../../src/utils/db';
+import { configureServer } from '../../src/api';
+import { buildSchemas } from '../../src/schemas';
 
 describe('API tests', () => {
   const app = configureServer();
@@ -22,7 +22,7 @@ describe('API tests', () => {
   });
 
   describe('Rides API', () => {
-    const idsOfCreatedRides = [];
+    const idsOfCreatedRides: string[] = [];
 
     after(() => {
       return db.table('Rides').delete().whereIn('rideID', idsOfCreatedRides);
@@ -39,7 +39,11 @@ describe('API tests', () => {
         driver_vehicle: 'Driver vehicle',
       };
 
-      const tryToCreateRideAndExpectCertainResponse = (ride, responseStatus, responseChecker) => {
+      const tryToCreateRideAndExpectCertainResponse = (
+        ride: Record<string, any>,
+        responseStatus: number,
+        responseChecker: (body: any) => void,
+      ) => {
         return request(app)
           .post('/rides')
           .send(ride)
