@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint --fix src/ tests/",
     "test": "nyc mocha -r ts-node/register tests/api/**/*.ts",
-    "test:load": "npm run start:background && artillery run tests/load/rides.yaml ; npm run stop:background",
+    "test:load": "artillery run",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/app.js",
     "start:background": "npm run build && forever start build/app.js",
@@ -22,9 +22,9 @@
   "license": "ISC",
   "dependencies": {
     "config": "^3.3.6",
-    "express": "^4.16.4",
-    "knex": "^0.21.21",
-    "sqlite3": "^4.0.6",
+    "express": "^4.17.1",
+    "knex": "^0.95.10",
+    "sqlite3": "^5.0.2",
     "typescript": "^4.3.5",
     "winston": "^3.3.3"
   },
@@ -41,7 +41,7 @@
     "chai": "^4.3.4",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-import": "^2.24.1",
     "forever": "^4.0.1",
     "mocha": "^6.2.3",
     "nyc": "^15.1.0",

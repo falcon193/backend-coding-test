@@ -1,7 +1,7 @@
-import knex from 'knex';
+import { Knex } from 'knex';
 
-export const buildSchemas = async (db: knex): Promise<void> => {
-  await db.schema.createTable('Rides', (table: knex.CreateTableBuilder) => {
+export const buildSchemas = async (db: Knex): Promise<void> => {
+  await db.schema.createTable('Rides', (table: Knex.CreateTableBuilder) => {
     table.increments('rideID');
     table.decimal('startLat');
     table.decimal('startLong');
